@@ -42,18 +42,32 @@ class Googleplayspider(CrawlSpider):
 
         item["Link"] = str(response.url)
         # return the name of this app
+		
+        tmpitemname = response.xpath('//*[@class="document-title"]/div/text()').extract_first()
 
-        item["Item_name"] = response.xpath('//*[@class="document-title"]/div/text()').extract_first().encode("utf-8")
+        if tmpitemname is not None:
+            item["Item_name"] = tmpitemname.encode("utf-8")
+        else:
+            item["Item_name"] = ""
         # return the last update of this app
         '''
             u'2017\u5e748\u670830\u65e5'
             the return the update is the time slot, which is in unicode
         '''
 
-        item["Last_Updated"] = response.xpath('//*[@itemprop="datePublished"]/text()').extract_first().encode("utf-8")
+        tmplastupdate = response.xpath('//*[@itemprop="datePublished"]/text()').extract_first()
+        if tmplastupdate is not None:
+            item["Last_Updated"] = tmplastupdate.encode("utf-8")
+        else:
+            item["Last_Updated"] = ""
+
         # return the author of this app
 
-        item["Author"] = response.xpath('//*[@itemprop="author"]/a/span/text()').extract_first().encode("utf-8")
+        tmpauthor = response.xpath('//*[@itemprop="author"]/a/span/text()').extract_first()
+        if tmpauthor is not None:
+            item["Author"] = tmpauthor.encode("utf-8")
+        else:
+            item["Author"] = ""
 
         # return the file size of this app
         '''
@@ -66,13 +80,13 @@ class Googleplayspider(CrawlSpider):
             item["Filesize"] = ""
 
         # return the downloads
-        item["Downloads"] = response.xpath('//*[@itemprop="numDownloads"]/text()').extract_first().encode("utf-8")
+        item["Downloads"] = response.xpath('//*[@itemprop="numDownloads"]/text()').extract_first()
 
         # return the version of application
         item["Version"] = str(response.xpath('//*[@itemprop="softwareVersion"]/text()').extract_first())
 
         # return the operation system of the application
-        item["Operation_system"] = response.xpath('//*[@itemprop="operatingSystems"]/text()').extract_first().encode("utf-8")
+        item["Operation_system"] = response.xpath('//*[@itemprop="operatingSystems"]/text()').extract_first()
 
         # return the contaent rating for the age of
         content_rating = response.xpath('//*[@itemprop="contentRating"]/text()').extract_first()
@@ -99,11 +113,11 @@ class Googleplayspider(CrawlSpider):
             item['Privacy_link'] = ""
 
         # category
-        item["Genre"] = response.xpath('//*[@itemprop="genre"]/text()').extract_first().encode("utf-8")
+        item["Genre"] = response.xpath('//*[@itemprop="genre"]/text()').extract_first()
 
         # price
         #item["Price"] = response.xpath('//*[@class="price buy id-track-click"]/span[2]/text()').extract_first()
-        price = response.xpath('//button[@class="price buy id-track-click id-track-impression"]/span[2]/text()').extract_first().strip()
+        price = response.xpath('//button[@class="price buy id-track-click id-track-impression"]/span[2]/text()').extract_first()
         if price != "Install":
             item["Price"] = price
         else:
@@ -157,7 +171,7 @@ class Googleplayspider(CrawlSpider):
             item["Video_URL"] = ""
 
         # the id of the developer
-        item["Developer_ID"] = response.xpath('//*[@itemprop="author"]/a/@href').extract_first().encode("utf-8")
+        item["Developer_ID"] = response.xpath('//*[@itemprop="author"]/a/@href').extract_first()
 
         yield item
 
