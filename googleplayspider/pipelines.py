@@ -91,10 +91,12 @@ class GoogleplayspiderPipeline(object):
             placeholders = ','.join(len(item) * '?')
             print('insert new value:'+item['Link'])
             sql = 'INSERT INTO googleplay({}) values({})'
-            self.cur.execute(sql.format(col, placeholders), item.values())
+            #self.cur.execute(sql.format(col, placeholders), item.values())
+            self.cur.execute("INSERT INTO googleplay(Link,Item_name,Last_Updated,Author,Filesize,Downloads,Version,Operation_system,Content_rating,Author_link,Privacy_link,Genre,Price,Rating_value,Review_number,Description,IAP,Developer_badge,Physical_address,Video_URL,Developer_ID) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(item['Link'],item['Item_name'],item['Last_Updated'],item['Author'],item['Filesize'],item['Downloads'],item['Version'],item['Operation_system'],item['Content_rating'],item['Author_link'],item['Privacy_link'],item['Genre'],item['Price'],item['Rating_value'],item['Review_number'],item['Description'],item['IAP'],item['Developer_badge'],item['Physical_address'],item['Video_URL'],item['Developer_ID']))
+            self.con.commit()
 
             # json
-            line = json.dumps(dict(item), ensure_ascii=False, encoding='utf8', indent=4) + ','
-            with open(fileName, 'a') as f:
-                f.write(line.encode('utf8'))
+            # line = json.dumps(dict(item), ensure_ascii=False, indent=4) + ','
+            # with open(fileName, 'a') as f:
+            #     f.write(line.encode('utf8'))
         return item
